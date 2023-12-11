@@ -1,10 +1,5 @@
 
 
-/**
- * @author wv
- * @version V1.0
- * @date 2023/12/11 16:29
- */
 public class SimpleCompute {
     public static void main(String[] args) {
         int a = Integer.parseInt(args[0]);
