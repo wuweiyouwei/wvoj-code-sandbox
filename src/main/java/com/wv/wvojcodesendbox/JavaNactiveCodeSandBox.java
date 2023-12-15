@@ -46,7 +46,8 @@ public class JavaNactiveCodeSandBox implements CodeSandBox {
         ExecuteCodeRequest executeCodeRequest = new ExecuteCodeRequest();
         executeCodeRequest.setInputList(Arrays.asList("1 2", "3 4"));
         // 将代码文件读取到项目中
-        String code = ResourceUtil.readStr("simpleCompute/Main.java", StandardCharsets.UTF_8);
+//        String code = ResourceUtil.readStr("simpleCompute/Main.java", StandardCharsets.UTF_8);
+        String code = ResourceUtil.readStr("unsafe/MemoryError.java", StandardCharsets.UTF_8);
         executeCodeRequest.setCode(code);
         executeCodeRequest.setLanguage("Java");
 
