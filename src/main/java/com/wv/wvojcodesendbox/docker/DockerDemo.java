@@ -16,22 +16,22 @@ import com.github.dockerjava.core.command.LogContainerResultCallback;
 public class DockerDemo {
 
     public static void main(String[] args) throws InterruptedException {
-        DockerClient dockerClient = DockerClientBuilder.getInstance("tcp://8.140.253.156:2375").build();
+        DockerClient dockerClient = DockerClientBuilder.getInstance("tcp://192.168.192.128:2375").build();
 
         // 1.拉取镜像
         String image = "nginx:latest";
-//        PullImageCmd pullImageCmd = dockerClient.pullImageCmd(image);
-//        PullImageResultCallback pullImageResultCallback = new PullImageResultCallback() {
-//            @Override
-//            public void onNext(PullResponseItem item) {
-//                System.out.println("下载镜像：" + item.getStatus());
-//                super.onNext(item);
-//            }
-//        };
-//        pullImageCmd
-//                .exec(pullImageResultCallback)
-//                .awaitCompletion();
-//        System.out.println("下载完成");
+        PullImageCmd pullImageCmd = dockerClient.pullImageCmd(image);
+        PullImageResultCallback pullImageResultCallback = new PullImageResultCallback() {
+            @Override
+            public void onNext(PullResponseItem item) {
+                System.out.println("下载镜像：" + item.getStatus());
+                super.onNext(item);
+            }
+        };
+        pullImageCmd
+                .exec(pullImageResultCallback)
+                .awaitCompletion();
+        System.out.println("下载完成");
 
         // 2.创建容器
         CreateContainerCmd containerCmd = dockerClient.createContainerCmd(image);
