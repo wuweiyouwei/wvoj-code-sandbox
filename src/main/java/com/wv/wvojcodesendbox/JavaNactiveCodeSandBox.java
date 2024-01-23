@@ -1,23 +1,22 @@
 package com.wv.wvojcodesendbox;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.List;
-
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.dfa.FoundWord;
+import cn.hutool.dfa.WordTree;
 import com.wv.wvojcodesendbox.model.ExecuteCodeRequest;
 import com.wv.wvojcodesendbox.model.ExecuteCodeResponse;
 import com.wv.wvojcodesendbox.model.ExecuteMessage;
 import com.wv.wvojcodesendbox.model.JudgeInfo;
+import com.wv.wvojcodesendbox.security.DefaultSecurityManager;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.ResourceUtils;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -41,7 +40,21 @@ public class JavaNactiveCodeSandBox implements CodeSandBox {
      */
     private static final String GLOBAL_CODE_CLASS_NAME = "Main.java";
 
+    /**
+     * 黑名单字段方式，防止用户恶意操作
+     */
+    private static final List<String> BLACK_LIST = Arrays.asList("exec", "Files");
+
+
+    public static final WordTree WORD_TREE;
+
+    static {
+        WORD_TREE = new WordTree();
+        WORD_TREE.addWords(BLACK_LIST);
+    }
+
     public static void main(String[] args) {
+//        System.setSecurityManager(new DefaultSecurityManager());
         JavaNactiveCodeSandBox javaNactiveCodeSandBox = new JavaNactiveCodeSandBox();
         ExecuteCodeRequest executeCodeRequest = new ExecuteCodeRequest();
         executeCodeRequest.setInputList(Arrays.asList("1 2", "3 4"));
@@ -61,7 +74,15 @@ public class JavaNactiveCodeSandBox implements CodeSandBox {
         String language = executeRequest.getLanguage();
         String code = executeRequest.getCode();
 
+        // 黑名单字段方式，防止用户恶意操作
+        FoundWord foundWord = WORD_TREE.matchWord(code);
+        if (foundWord != null) {
+            System.out.println("发现违禁词：" + foundWord.getWord());
+            return null;
+        }
+
         // 1.将用户提交的代码保存为文件
+        // 用户根目录
         String userDir = System.getProperty("user.dir");
         String globalCodePathName = userDir + File.separator + GLOBAL_CODE_DIR_NAME;
         // 判断全局代码目录是否存在，没有则新建

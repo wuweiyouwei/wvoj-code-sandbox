@@ -8,6 +8,9 @@ class WvojCodeSendboxApplicationTests {
 
     @Test
     void contextLoads() {
+
+        String str = "aaabbbccc";
+        System.out.println(str.substring(0, 3));
     }
 
 }
