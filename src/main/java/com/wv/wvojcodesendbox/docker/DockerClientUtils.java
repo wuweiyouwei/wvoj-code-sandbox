@@ -70,7 +70,7 @@ public class DockerClientUtils {
     public static void main(String[] args){
         DockerClientUtils dockerClientUtils =new DockerClientUtils();
         //连接Docker服务器
-        DockerClient client = dockerClientUtils.connectDocker("tcp://8.140.253.156:2375");
+        DockerClient client = dockerClientUtils.connectDocker("tcp://192.168.192.128:2375");
         //创建容器
         CreateContainerResponse container = dockerClientUtils.createContainers(client,"sny_hello","hello-world");
         //启动容器

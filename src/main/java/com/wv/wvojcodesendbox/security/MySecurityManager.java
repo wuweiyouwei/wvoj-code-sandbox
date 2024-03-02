@@ -9,7 +9,6 @@ package com.wv.wvojcodesendbox.security;
  */
 public class MySecurityManager extends SecurityManager {
 
-
     /**
      * 限制执行命令
      *

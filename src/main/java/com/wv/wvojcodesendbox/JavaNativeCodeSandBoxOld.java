@@ -9,7 +9,6 @@ import com.wv.wvojcodesendbox.model.ExecuteCodeRequest;
 import com.wv.wvojcodesendbox.model.ExecuteCodeResponse;
 import com.wv.wvojcodesendbox.model.ExecuteMessage;
 import com.wv.wvojcodesendbox.model.JudgeInfo;
-import com.wv.wvojcodesendbox.security.DefaultSecurityManager;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
@@ -28,7 +27,7 @@ import java.util.UUID;
  * @date 2023/12/11 17:20
  */
 @Slf4j
-public class JavaNactiveCodeSandBox implements CodeSandBox {
+public class JavaNativeCodeSandBoxOld implements CodeSandBox {
 
     /**
      * 全局代码存放根目录
@@ -55,7 +54,7 @@ public class JavaNactiveCodeSandBox implements CodeSandBox {
 
     public static void main(String[] args) {
 //        System.setSecurityManager(new DefaultSecurityManager());
-        JavaNactiveCodeSandBox javaNactiveCodeSandBox = new JavaNactiveCodeSandBox();
+        JavaNativeCodeSandBoxOld javaNativeCodeSandBox = new JavaNativeCodeSandBoxOld();
         ExecuteCodeRequest executeCodeRequest = new ExecuteCodeRequest();
         executeCodeRequest.setInputList(Arrays.asList("1 2", "3 4"));
         // 将代码文件读取到项目中
@@ -64,7 +63,7 @@ public class JavaNactiveCodeSandBox implements CodeSandBox {
         executeCodeRequest.setCode(code);
         executeCodeRequest.setLanguage("Java");
 
-        ExecuteCodeResponse executeCodeResponse = javaNactiveCodeSandBox.executeCode(executeCodeRequest);
+        ExecuteCodeResponse executeCodeResponse = javaNativeCodeSandBox.executeCode(executeCodeRequest);
         System.out.println(executeCodeResponse);
     }
 

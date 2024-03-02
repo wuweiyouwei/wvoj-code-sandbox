@@ -23,4 +23,5 @@ public class DefaultSecurityManager extends SecurityManager {
 //        super.checkPermission(perm);
         throw new SecurityException("权限异常" + perm.toString());
     }
+
 }
