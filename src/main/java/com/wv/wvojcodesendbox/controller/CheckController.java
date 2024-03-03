@@ -5,6 +5,7 @@ import cn.hutool.crypto.digest.DigestUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wv.wvojcodesendbox.JavaCodeSandBoxTemplate;
 import com.wv.wvojcodesendbox.JavaNativeCodeSandBox;
+import com.wv.wvojcodesendbox.manager.RedisLimiterManager;
 import com.wv.wvojcodesendbox.model.ExecuteCodeRequest;
 import com.wv.wvojcodesendbox.model.ExecuteCodeResponse;
 import com.wv.wvojcodesendbox.model.domain.User;
@@ -40,9 +41,19 @@ public class CheckController {
     @Resource
     private UserService userService;
 
+    @Resource
+    private RedisLimiterManager redisLimiterManager;
+
     @PostMapping("/executeCode")
     public ExecuteCodeResponse executeCode(@RequestBody ExecuteCodeRequest executeCodeRequest, HttpServletRequest request,
                                            HttpServletResponse response) {
+        // 限流判断，一秒中两个请求
+        String redisKey = "/executeCode:1s:2";
+        boolean limit = redisLimiterManager.isLimit(redisKey, 2);
+        if(!limit) {
+            // 限流
+            throw new RuntimeException("请求过于频繁");
+        }
         String accessKey = request.getHeader("accessKey");
         String timestamp = request.getHeader("timestamp");
         String nonce = request.getHeader("nonce");
@@ -54,14 +65,14 @@ public class CheckController {
         if (user == null) {
             throw new RuntimeException("权限异常");
         }
-        if (Long.parseLong(nonce) > 9999) {
-            // 检验随机数
-            throw new RuntimeException("权限异常");
-        }
-        if ((System.currentTimeMillis() / 1000) - Long.parseLong(timestamp) > 5) {
-            // 检验时间戳
-            throw new RuntimeException("权限异常");
-        }
+//        if (Long.parseLong(nonce) > 9999) {
+//            // 检验随机数
+//            throw new RuntimeException("权限异常");
+//        }
+//        if ((System.currentTimeMillis() / 1000) - Long.parseLong(timestamp) > 5) {
+//            // 检验时间戳
+//            throw new RuntimeException("权限异常");
+//        }
         // 签名校验
         String secretKey = user.getSecretKey();
         String generatedSign = DigestUtil.md5Hex(executeCodeRequest.toString() + "." + secretKey);
