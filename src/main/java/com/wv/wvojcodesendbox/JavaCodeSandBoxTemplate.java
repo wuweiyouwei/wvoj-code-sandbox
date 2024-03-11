@@ -71,7 +71,17 @@ public abstract class JavaCodeSandBoxTemplate implements CodeSandBox {
         File userCodeFile = saveCodeToFile(code);
 
         // 2. 编译代码，得到 class 文件
-        ExecuteMessage compileFileExecuteMessage = compileFile(userCodeFile);
+        ExecuteMessage compileFileExecuteMessage = null;
+        try {
+            compileFileExecuteMessage = compileFile(userCodeFile);
+        } catch (Exception e) {
+            return new ExecuteCodeResponse(new ArrayList<>(), e.getMessage(), 3, new JudgeInfo());
+        } finally {
+            boolean b = deleteFile(userCodeFile);
+            if (!b) {
+                log.error("deleteFile error, userCodeFilePath = {}", userCodeFile.getAbsolutePath());
+            }
+        }
         System.out.println(compileFileExecuteMessage);
 
         // 3. 执行代码，得到输出结果

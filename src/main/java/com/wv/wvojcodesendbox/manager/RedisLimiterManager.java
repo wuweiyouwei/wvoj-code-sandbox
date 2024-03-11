@@ -16,15 +16,16 @@ import redis.clients.jedis.JedisPooled;
 public class RedisLimiterManager {
 
 
-    @Value("${spring.redis.host}")
-    private static String host;
-    @Value("${spring.redis.port}")
-    private static Integer port;
+//    @Value("${spring.redis.host}")
+//    public static String host;
+//    @Value("${spring.redis.port}")
+//    public static Integer port;
 
     /**
      * Jedis 连接池
      */
-    public static final JedisPool JEDIS_POOLED = new JedisPool(host, port);
+//    public static final JedisPool JEDIS_POOLED = new JedisPool(host, port);
+    public static final JedisPool JEDIS_POOLED = new JedisPool("127.0.0.1", 6379);
 
 
     public boolean isLimit(String key,int limit){
