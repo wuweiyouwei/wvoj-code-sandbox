@@ -70,37 +70,32 @@ public abstract class JavaCodeSandBoxTemplate implements CodeSandBox {
         // 1. 把用户的代码保存为文件
         File userCodeFile = saveCodeToFile(code);
 
-        // 2. 编译代码，得到 class 文件
-        ExecuteMessage compileFileExecuteMessage = null;
         try {
-            compileFileExecuteMessage = compileFile(userCodeFile);
+            // 2. 编译代码，得到 class 文件
+            ExecuteMessage compileFileExecuteMessage = compileFile(userCodeFile);
+            System.out.println(compileFileExecuteMessage);
+
+            // 3. 执行代码，得到输出结果
+            List<ExecuteMessage> executeMessageList = runFile(userCodeFile, inputList);
+
+            // 4. 收集整理输出结果
+            ExecuteCodeResponse outputResponse = getOutputResponse(executeMessageList);
+            return outputResponse;
         } catch (Exception e) {
             return new ExecuteCodeResponse(new ArrayList<>(), e.getMessage(), 3, new JudgeInfo());
         } finally {
+            // 5. 文件清理
             boolean b = deleteFile(userCodeFile);
             if (!b) {
                 log.error("deleteFile error, userCodeFilePath = {}", userCodeFile.getAbsolutePath());
             }
         }
-        System.out.println(compileFileExecuteMessage);
-
-        // 3. 执行代码，得到输出结果
-        List<ExecuteMessage> executeMessageList = runFile(userCodeFile, inputList);
-
-        // 4. 收集整理输出结果
-        ExecuteCodeResponse outputResponse = getOutputResponse(executeMessageList);
-
-        // 5. 文件清理
-        boolean b = deleteFile(userCodeFile);
-        if (!b) {
-            log.error("deleteFile error, userCodeFilePath = {}", userCodeFile.getAbsolutePath());
-        }
-        return outputResponse;
     }
 
 
     /**
      * 1. 把用户的代码保存为文件
+     *
      * @param code 用户代码
      * @return
      */
@@ -121,6 +116,7 @@ public abstract class JavaCodeSandBoxTemplate implements CodeSandBox {
 
     /**
      * 2、编译代码
+     *
      * @param userCodeFile
      * @return
      */
@@ -141,6 +137,7 @@ public abstract class JavaCodeSandBoxTemplate implements CodeSandBox {
 
     /**
      * 3、执行文件，获得执行结果列表
+     *
      * @param userCodeFile
      * @param inputList
      * @return
@@ -176,6 +173,7 @@ public abstract class JavaCodeSandBoxTemplate implements CodeSandBox {
 
     /**
      * 4、获取输出结果
+     *
      * @param executeMessageList
      * @return
      */
@@ -213,6 +211,7 @@ public abstract class JavaCodeSandBoxTemplate implements CodeSandBox {
 
     /**
      * 5、删除文件
+     *
      * @param userCodeFile
      * @return
      */
